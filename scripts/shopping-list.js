@@ -1,3 +1,4 @@
+/* eslint-disable strict */
 /* global store, $ */
 
 // eslint-disable-next-line no-unused-vars
@@ -84,20 +85,26 @@ const shoppingList = (function(){
   function handleItemCheckClicked() {
     $('.js-shopping-list').on('click', '.js-item-toggle', event => {
       const id = getItemIdFromElement(event.currentTarget);
-      store.findAndToggleChecked(id);
-      render();
+      const item = store.findById(id);
+      api.updateItem(id, {checked: !item.checked} )
+        .then(res => res.json())
+        .then(checkedItem => {
+          store.findAndUpdate(id, { checked : !item.checked } );
+          render();
+        });
+
     });
   }
   
   function handleDeleteItemClicked() {
-    // like in `handleItemCheckClicked`, we use event delegation
     $('.js-shopping-list').on('click', '.js-item-delete', event => {
-      // get the index of the item in store.items
       const id = getItemIdFromElement(event.currentTarget);
-      // delete the item
-      store.findAndDelete(id);
-      // render the updated shopping list
-      render();
+      api.deleteItem(id)
+        .then(res => res.json())
+        .then(deletedItem => {
+          store.findAndDelete(id);
+          render();
+        });
     });
   }
   

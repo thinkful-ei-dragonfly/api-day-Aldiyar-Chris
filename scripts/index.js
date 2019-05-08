@@ -6,7 +6,6 @@ $(document).ready(function() {
   shoppingList.render();
 });
 
-store.items.push(Item.create('apples'));
 
 api.getItems()
   .then(res => res.json())
@@ -14,6 +13,8 @@ api.getItems()
     items.forEach((item) => store.addItem(item));
     shoppingList.render();
   });
+
+  
 
 
 console.log(api.BASE_URL);

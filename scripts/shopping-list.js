@@ -66,11 +66,15 @@ const shoppingList = (function(){
       event.preventDefault();
       const newItemName = $('.js-shopping-list-entry').val();
       $('.js-shopping-list-entry').val('');
-      store.addItem(newItemName);
+      api.createItem(newItemName)
+      .then(res => res.json())
+      .then((newItem) => {
+      store.addItem(newItem);
       render();
-    });
-  }
-  
+      });
+  })
+}
+
   function getItemIdFromElement(item) {
     return $(item)
       .closest('.js-item-element')
@@ -102,9 +106,12 @@ const shoppingList = (function(){
       event.preventDefault();
       const id = getItemIdFromElement(event.currentTarget);
       const itemName = $(event.currentTarget).find('.shopping-item').val();
-      store.findAndUpdateName(id, itemName);
-      store.setItemIsEditing(id, false);
-      render();
+      api.updateItem(id, {name:itemName})
+      .then(res => res.json())
+      .then(updatedItem => {
+        store.findAndUpdate(id, {name:itemName, isEditing:false});
+        render();
+      });
     });
   }
   
